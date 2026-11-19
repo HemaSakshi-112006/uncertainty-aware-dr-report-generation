@@ -8,7 +8,7 @@ from PIL import Image
 
 from services.image_processing import preprocess_image
 from services.model_prediction import predict_image, model
-from services.llm_report import generate_report
+from services.llm_report import generate_report, PROMPT_BUILDERS
 from services.gradcam import (
     create_gradcam_model,
     generate_gradcam,
@@ -96,7 +96,65 @@ def predict():
             "error": str(e)
         }), 500
     
+@app.route("/api/prompts", methods=["POST"])
+def get_prompts():
+
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "No prediction data provided"}), 400
+
+    prediction_result = data.get("prediction_result")
+
+    if not prediction_result:
+        return jsonify({"error": "Prediction result is missing"}), 400
+
+    prompt_details = {
+        "zero_shot": {
+            "name": "Zero-Shot",
+            "description": "Generates a screening report directly from CNN output without examples."
+        },
+        "few_shot": {
+            "name": "Few-Shot",
+            "description": "Uses examples to guide the structure and style of the screening report."
+        },
+        "uncertainty_aware": {
+            "name": "Uncertainty-Aware Adaptive",
+            "description": "Adapts the report using maximum probability, top-two gap and normalized entropy."
+        },
+        "chain_of_verification": {
+            "name": "Chain-of-Verification",
+            "description": "Generates a report, verifies its claims against CNN output and produces a corrected report."
+        },
+        "evidence_grounded": {
+            "name": "Evidence-Grounded / Closed-World",
+            "description": "Restricts the report to information explicitly supplied by the CNN."
+        },
+        "self_consistency": {
+            "name": "Self-Consistency",
+            "description": "Generates three reports and compares their factual and safety consistency."
+        }
+    }
+
+    try:
+        prompts = {}
+
+        for technique, builder in PROMPT_BUILDERS.items():
+
+            prompts[technique] = {
+                **prompt_details[technique],
+                "full_prompt": builder(prediction_result)
+            }
+
+        return jsonify({
+            "prompts": prompts
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 # AI-generated screening report route
+
 @app.route("/api/generate-report", methods=["POST"])
 def generate_ai_report():
 
@@ -105,15 +163,29 @@ def generate_ai_report():
     if not data:
         return jsonify({"error": "No prediction data provided"}), 400
 
+    prediction_result = data.get("prediction_result")
+    technique = data.get("technique", "zero_shot")
+
+    if not prediction_result:
+        return jsonify({"error": "Prediction result is missing"}), 400
+
     try:
-        report = generate_report(data)
+        report = generate_report(
+            prediction_result,
+            technique
+        )
 
         return jsonify({
+            "selected_technique": technique,
             "ai_report": report
         })
 
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 
 

@@ -3,6 +3,15 @@ import os
 from groq import Groq
 from dotenv import load_dotenv
 
+from services.prompt_templates import (
+    build_zero_shot_prompt,
+    build_few_shot_prompt,
+    build_uncertainty_aware_prompt,
+    build_chain_of_verification_prompt,
+    build_evidence_grounded_prompt,
+    build_self_consistency_prompt
+)
+
 load_dotenv()
 
 groq_client = Groq(
@@ -12,36 +21,22 @@ groq_client = Groq(
 MODEL_NAME = "openai/gpt-oss-120b"
 
 
-def generate_report(prediction_result):
+PROMPT_BUILDERS = {
+    "zero_shot": build_zero_shot_prompt,
+    "few_shot": build_few_shot_prompt,
+    "uncertainty_aware": build_uncertainty_aware_prompt,
+    "chain_of_verification": build_chain_of_verification_prompt,
+    "evidence_grounded": build_evidence_grounded_prompt,
+    "self_consistency": build_self_consistency_prompt
+}
 
-    predicted_class = prediction_result["predicted_class"]
-    probabilities = prediction_result["class_probabilities"]
 
-    prompt = f"""
-You are an AI assistant that explains diabetic retinopathy
-screening model results in clear and simple language.
+def generate_report(prediction_result, technique="zero_shot"):
 
-The CNN model produced the following results:
+    if technique not in PROMPT_BUILDERS:
+        raise ValueError("Invalid prompt technique selected")
 
-Predicted DR grade: {predicted_class}
-
-Class probabilities:
-{probabilities}
-
-Instructions:
-1. Explain the predicted DR grade.
-2. Summarize the class probability distribution.
-3. Explain that these percentages are model output probabilities,
-   not calibrated clinical confidence.
-4. Do not claim that you examined the retinal image.
-5. Do not invent retinal findings, lesions, symptoms, or patient history.
-6. Do not provide a confirmed diagnosis or treatment advice.
-7. Clearly state that this is an experimental AI screening result
-   and requires review by a qualified ophthalmologist.
-8. Use clear headings and simple language.
-
-Generate a concise screening report based only on the information provided.
-"""
+    prompt = PROMPT_BUILDERS[technique](prediction_result)
 
     response = groq_client.chat.completions.create(
         model=MODEL_NAME,

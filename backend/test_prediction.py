@@ -13,13 +13,13 @@ processed_image = preprocess_image(image_bytes)
 result = predict_image(processed_image)
 
 # Display the result
-print("\nPrediction Result")
-print("-------------------------")
-
-print("Predicted DR Grade:", result["predicted_class"])
-print("Predicted Class Index:", result["predicted_class_index"])
+print("Predicted Grade:", result["predicted_class"])
 
 print("\nClass Probabilities:")
+for name, probability in result["class_probabilities"].items():
+    print(f"{name}: {probability}%")
 
-for grade, probability in result["class_probabilities"].items():
-    print(f"{grade}: {probability}%")
+print("\nMaximum Probability:", result["maximum_probability"])
+print("Top Two Classes:", result["top_two_classes"])
+print("Top Two Probability Gap:", result["top_two_probability_gap"])
+print("Normalized Entropy:", result["normalized_entropy"])
