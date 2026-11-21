@@ -1,0 +1,128 @@
+/* Styles for Analysis page (Analyze.jsx) */
+
+.app {
+  min-height: 100vh;
+  background-color: #060f1e;
+  color: #f8fafc;
+  font-family: "DM Sans", "Inter", sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 25, 47, 0.8);
+  backdrop-filter: blur(12px);
+}
+
+.logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #14b8a6;
+}
+
+.main-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.hero h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin: 0.75rem 0;
+  color: #ffffff;
+}
+
+.hero p {
+  color: #94a3b8;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #14b8a6;
+}
+
+.upload-section {
+  background: rgba(15, 35, 66, 0.6);
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  text-align: center;
+  box-shadow: 0 8px 32px -4px rgba(10, 25, 47, 0.4);
+}
+
+.upload-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.upload-section > p {
+  color: #94a3b8;
+  margin-bottom: 1.5rem;
+}
+
+.upload-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed rgba(20, 184, 166, 0.4);
+  border-radius: 1rem;
+  padding: 3rem 2rem;
+  cursor: pointer;
+  background: rgba(10, 25, 47, 0.5);
+  transition: all 0.2s ease;
+}
+
+.upload-box:hover {
+  border-color: #14b8a6;
+  background: rgba(20, 184, 166, 0.05);
+}
+
+.upload-icon {
+  font-size: 2rem;
+  color: #14b8a6;
+  margin-bottom: 0.5rem;
+}
+
+.upload-box strong {
+  font-size: 1.1rem;
+  color: #ffffff;
+}
+
+.upload-box span {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-top: 0.25rem;
+}
+
+.preview-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.preview-section img {
+  max-width: 320px;
+  max-height: 320px;
+  border-radius: 1rem;
+  border: 1px solid rgba(20, 184, 166, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  margin: 1rem 0;
+}
